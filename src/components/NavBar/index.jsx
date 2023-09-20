@@ -5,17 +5,25 @@ import { ShoppingCartContext } from '../../Context';
 
 function NavBar() {
   const activeStyle = 'underline underline-offset-4';
+  const handleCheckoutSideMenu = () => {
+    if (context.isCheckOutSideMenuOpen) {
+      context.closeCheckOutSideMenu();
+    } else {
+      context.openCheckOutSideMenu();
+    }
+  };
   const context = useContext(ShoppingCartContext);
 
   return (
     <nav className='flex justify-between items-center fixed bg-white z-10 top-0 w-full px-8 py-4 font-medium text-sm'>
       <ul className='flex items-center gap-3'>
         <li className='font-bold text-lg'>
-          <NavLink to='/'>Shopi</NavLink>
+          <NavLink to='/'>KHD</NavLink>
         </li>
         <li>
           <NavLink
             to='/'
+            onClick={() => context.setSearchByCategory(null)}
             className={({ isActive, isPending }) =>
               isPending ? 'pending' : isActive ? activeStyle : ''
             }
@@ -26,6 +34,7 @@ function NavBar() {
         <li>
           <NavLink
             to='/clothes'
+            onClick={() => context.setSearchByCategory('clothes')}
             className={({ isActive, isPending }) =>
               isPending ? 'pending' : isActive ? activeStyle : ''
             }
@@ -36,6 +45,7 @@ function NavBar() {
         <li>
           <NavLink
             to='/electronics'
+            onClick={() => context.setSearchByCategory('electronics')}
             className={({ isActive, isPending }) =>
               isPending ? 'pending' : isActive ? activeStyle : ''
             }
@@ -46,6 +56,7 @@ function NavBar() {
         <li>
           <NavLink
             to='/furnitures'
+            onClick={() => context.setSearchByCategory('furnitures')}
             className={({ isActive, isPending }) =>
               isPending ? 'pending' : isActive ? activeStyle : ''
             }
@@ -56,6 +67,7 @@ function NavBar() {
         <li>
           <NavLink
             to='/toys'
+            onClick={() => context.setSearchByCategory('toys')}
             className={({ isActive, isPending }) =>
               isPending ? 'pending' : isActive ? activeStyle : ''
             }
@@ -66,6 +78,7 @@ function NavBar() {
         <li>
           <NavLink
             to='/others'
+            onClick={() => context.setSearchByCategory('others')}
             className={({ isActive, isPending }) =>
               isPending ? 'pending' : isActive ? activeStyle : ''
             }
@@ -107,8 +120,11 @@ function NavBar() {
           </NavLink>
         </li>
         <li className='flex items-center'>
-          <ShoppingCartIcon className='h-6 w-6 text-black' />
-          <div>{context.count}</div>
+          <ShoppingCartIcon
+            className='h-6 w-6 text-black cursor-pointer'
+            onClick={() => handleCheckoutSideMenu()}
+          />
+          <div>{context.cartProducts.length}</div>
         </li>
       </ul>
     </nav>
