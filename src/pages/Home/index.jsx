@@ -18,8 +18,8 @@ function Home() {
   };
   return (
     <Layout>
-      <div className='flex justify-center items-center relative w-80 mb-4'>
-        <h1 className=' font-medium text-lg '>Exotic products</h1>
+      <div className='flex justify-center items-center relative w-120 mb-14'>
+        <h1 className=' font-extrabold text-5xl'>Exotic products</h1>
       </div>
       <input
         type='text'
