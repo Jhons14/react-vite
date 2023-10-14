@@ -4,7 +4,22 @@ import { ShoppingCartIcon } from '@heroicons/react/24/solid';
 import { ShoppingCartContext } from '../../Context';
 
 function NavBar() {
-  const activeStyle = 'underline underline-offset-4';
+  const context = useContext(ShoppingCartContext);
+  const activeStyle = 'bg-orange-500/80 text-white rounded py-1 px-2';
+
+  const account = localStorage.getItem('account');
+  const parsedAccount = JSON.parse(account);
+
+  const signOut = localStorage.getItem('sign-out');
+  const parsedSignOut = JSON.parse(signOut);
+  const isUserSignOut = context.signOut || parsedSignOut;
+
+  const noAccountInLocalStorage = parsedAccount
+    ? Object.keys(parsedAccount).length === 0
+    : true;
+  const noAccountInLocalState = Object.keys(context.account).length === 0;
+  const hasUserAnAccount = !noAccountInLocalStorage || !noAccountInLocalState;
+
   const handleCheckoutSideMenu = () => {
     if (context.isCheckOutSideMenuOpen) {
       context.closeCheckOutSideMenu();
@@ -12,13 +27,71 @@ function NavBar() {
       context.openCheckOutSideMenu();
     }
   };
-  const context = useContext(ShoppingCartContext);
+
+  const handleSignOut = () => {
+    const stringfiedSignOut = JSON.stringify(true);
+    localStorage.setItem('sign-out', stringfiedSignOut);
+    context.setSignOut(true);
+  };
+
+  const renderView = () => {
+    if (hasUserAnAccount || !context.signOut) {
+      return (
+        <>
+          <li className='text-black/50'>{parsedAccount.email}</li>
+          <li>
+            <NavLink
+              to='/my-orders'
+              className={({ isActive, isPending }) =>
+                isPending ? 'pending' : isActive ? activeStyle : ''
+              }
+            >
+              My Orders
+            </NavLink>
+          </li>
+          <li>
+            <NavLink
+              to='/my-account'
+              className={({ isActive, isPending }) =>
+                isPending ? 'pending' : isActive ? activeStyle : ''
+              }
+            >
+              My Account
+            </NavLink>
+          </li>
+          <li>
+            <NavLink
+              to='/sign-in'
+              onClick={() => handleSignOut()}
+              className={({ isActive, isPending }) =>
+                isPending ? 'pending' : isActive ? activeStyle : ''
+              }
+            >
+              SignOut
+            </NavLink>
+          </li>
+        </>
+      );
+    } else {
+      return (
+        <li>
+          <NavLink
+            to='/sign-in'
+            className={({ isActive }) => (isActive ? activeStyle : undefined)}
+            onClick={() => handleSignOut()}
+          >
+            Sign in
+          </NavLink>
+        </li>
+      );
+    }
+  };
 
   return (
     <nav className='flex justify-between items-center fixed bg-white z-10 top-0 w-full px-8 py-4 font-medium text-sm'>
       <ul className='flex items-center gap-3'>
         <li className='font-bold text-lg'>
-          <NavLink to='/'>KHD</NavLink>
+          <NavLink to={`${isUserSignOut ? 'sign-in' : '/'}`}>KHD</NavLink>
         </li>
         <li>
           <NavLink
@@ -88,43 +161,15 @@ function NavBar() {
         </li>
       </ul>
       <ul className='flex items-center gap-3'>
-        <li className='text-black/50'>jhons@123.com</li>
+        {renderView()}
         <li>
-          <NavLink
-            to='/my-orders'
-            className={({ isActive, isPending }) =>
-              isPending ? 'pending' : isActive ? activeStyle : ''
-            }
+          <span
+            className='flex items-center text-black cursor-pointer'
+            onClick={handleCheckoutSideMenu}
           >
-            My Orders
-          </NavLink>
-        </li>
-        <li>
-          <NavLink
-            to='/my-account'
-            className={({ isActive, isPending }) =>
-              isPending ? 'pending' : isActive ? activeStyle : ''
-            }
-          >
-            My Account
-          </NavLink>
-        </li>
-        <li>
-          <NavLink
-            to='/sign-in'
-            className={({ isActive, isPending }) =>
-              isPending ? 'pending' : isActive ? activeStyle : ''
-            }
-          >
-            Sign In
-          </NavLink>
-        </li>
-        <li className='flex items-center'>
-          <ShoppingCartIcon
-            className='h-6 w-6 text-black cursor-pointer'
-            onClick={() => handleCheckoutSideMenu()}
-          />
-          <div>{context.cartProducts.length}</div>
+            <ShoppingCartIcon className='h-6 w-6 text-black cursor-pointer' />
+            <div>{context.cartProducts.length}</div>
+          </span>
         </li>
       </ul>
     </nav>

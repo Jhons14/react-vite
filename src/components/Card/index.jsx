@@ -1,5 +1,6 @@
 import { useContext } from 'react';
-import { PlusIcon, CheckIcon } from '@heroicons/react/24/solid';
+import { ShoppingCartIcon } from '@heroicons/react/24/solid';
+
 import { ShoppingCartContext } from '../../Context';
 
 function Card(data) {
@@ -11,40 +12,44 @@ function Card(data) {
     context.closeCheckOutSideMenu();
   };
 
-  const addProductsToCart = (event, productToAdd) => {
-    event.stopPropagation();
-    context.setCartProducts([...context.cartProducts, productToAdd]);
-    context.openCheckOutSideMenu();
-    context.closeProductDetail();
-  };
-
-  const renderIcon = (id) => {
-    const isInCart =
-      context.cartProducts.filter((product) => product.id === id).length > 0;
-    if (isInCart) {
-      return (
-        <div className='absolute top-0 right-0 flex justify-center items-center bg-black w-6 h-6 rounded-full m-2 p-1'>
-          <CheckIcon className='h-6 w-6 text-white'></CheckIcon>
-        </div>
-      );
+  const shoppingCartRender = (productChoosed) => {
+    const checked = (
+      <ShoppingCartIcon
+        className='h-7 w-7 bg-white/60 text-orange-500/80 flex flex-col text-center justify-center items-center absolute top-0 right-0 m-2 gap-1  p-1 rounded-sm'
+        onClick={(event) => {
+          context.addProductsToCart(event, data.data, 'add');
+        }}
+      />
+    );
+    const unChecked = (
+      <ShoppingCartIcon
+        className='h-7 w-7 bg-white/60 text-black flex flex-col text-center justify-center items-center absolute top-0 right-0 m-2 gap-1  p-1 rounded-sm'
+        onClick={(event) => {
+          context.addProductsToCart(event, data.data, 'add');
+        }}
+      />
+    );
+    if (context.cartProducts.length > 0) {
+      const isInCart =
+        context.cartProducts.filter(
+          (product) => productChoosed.id === product.id
+        ).length > 0;
+      if (isInCart) {
+        return checked;
+      } else {
+        return unChecked;
+      }
     } else {
-      return (
-        <div
-          className='absolute top-0 right-0 flex justify-center items-center bg-white w-6 h-6 rounded-full m-2 p-1'
-          onClick={(event) => addProductsToCart(event, data.data)}
-        >
-          <PlusIcon className='h-6 w-6 text-black'></PlusIcon>
-        </div>
-      );
+      return unChecked;
     }
   };
 
   return (
     <div
-      className='bg-white cursor-pointer w-56 h-60 rounded-lg'
+      className='bg-orange-300/20 p-4 w-72 cursor-pointer  rounded-lg'
       onClick={() => showProduct(data.data)}
     >
-      <figure className='relative mb-2 w-full h-4/5'>
+      <figure className='relative w-full h-52 mb-3'>
         <span className='absolute bottom-0 left-0 bg-white/60 rounded-lg text-black text-xs m-2 px-3 py-0.5'>
           {data.data.category.name}
         </span>
@@ -53,12 +58,19 @@ function Card(data) {
           src={data.data.images[0]}
           alt={data.data.title}
         />
-        {renderIcon(data.data.id)}
+        {shoppingCartRender(data.data)}
       </figure>
-      <p className='flex justify-between'>
-        <span className='text-sm font-light'>{data.data.title}</span>
-        <span className='text-lg font-medium'>${data.data.price}</span>
-      </p>
+      <section className='flex flex-col p-2 '>
+        <div className='flex mb-4  items-center justify-between'>
+          <span className='text-sm font-medium leading-4 pr-4  '>
+            {data.data.title}
+          </span>
+          <span className='text-lg font-medium'>${data.data.price}</span>
+        </div>
+        <p className='text-xs font-light leading-3 h-full'>
+          {data.data.description}
+        </p>
+      </section>
     </div>
   );
 }
