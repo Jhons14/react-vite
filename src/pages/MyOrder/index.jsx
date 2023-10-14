@@ -24,7 +24,7 @@ function MyOrder() {
           </Link>
           <h1>My Order</h1>
         </div>
-        <div className='px-6 flex-1 mb-24'>
+        <div className='px-6 flex-1 mb-10'>
           {context.order?.[index]?.products.map((product) => (
             <OrderCard
               key={product.id}
@@ -32,6 +32,7 @@ function MyOrder() {
               title={product.title}
               imgUrl={product.images[0]}
               price={product.price}
+              quantity={product.quantity}
             />
           ))}
         </div>

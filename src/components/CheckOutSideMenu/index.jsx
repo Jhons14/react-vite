@@ -28,15 +28,14 @@ function CheckOutSideMenu() {
     context.closeCheckOutSideMenu();
     context.setSearchByTitle(null);
   };
-
   return (
     <aside
       className={`${
         context.isCheckOutSideMenuOpen ? 'flex' : 'hidden'
-      } checkout-side-menu flex-col fixed right-0 border border-black rounded-lg bg-white`}
+      } checkout-side-menu flex-col fixed right-0 border rounded-lg bg-white`}
     >
-      <div className='flex justify-between items-center p-6'>
-        <h2 className='font-medium text-xl'>CheckOutSideMenu</h2>
+      <div className='flex justify-between items-center p-6 mb-1'>
+        <h2 className='font-medium text-xl'>Checkout</h2>
         <div>
           <XMarkIcon
             className='h-6 w-6 text-black cursor-pointer'
@@ -53,6 +52,8 @@ function CheckOutSideMenu() {
             title={product.title}
             imgUrl={product.images[0]}
             price={product.price}
+            quantity={product.quantity}
+            product={product}
             handleDelete={handleDelete}
           />
         ))}
